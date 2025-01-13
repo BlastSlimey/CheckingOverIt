@@ -71,12 +71,14 @@ public struct Trigger(float xma, float xmi, float yma, float ymi, string nam) {
 [HarmonyPatch(typeof(GravityControl))]
 public class GravityControlPatch {
 
+    public static System.Random Random = new System.Random();
+
     public static void UpdateGravity(bool creditsUp) {
         if (creditsUp) {
             Physics2D.gravity = new Vector2(0f, 1.2f);
         } else {
             Physics2D.gravity = new Vector2(
-                (new System.Random().Next(3) - 1) * 0.4f * ConnectionHandler.WindTraps, 
+                (Random.Next(3) - 1) * 0.4f * ConnectionHandler.WindTraps, 
                 -50 + (10 * ConnectionHandler.GravityReductions)
             );
         }
