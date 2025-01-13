@@ -40,14 +40,14 @@ public class PatchesHandler {
 
     // 0.2.0 locations
     public static Trigger Barrels = new(21, 18, 32, 30, "Barrels");
-    public static Trigger FirstLamp = new(28, 27, 70.7f, 69.9f, "FirstLamp");
-    public static Trigger BigBalloon = new(43, 37, 134, 124, "BigBalloon");
+    public static Trigger FirstLamp = new(28, 27, 70.7f, 69.9f, "First Lamp");
+    public static Trigger BigBalloon = new(43, 37, 134, 124, "Big Balloon");
     public static Trigger Pliers = new(35, 27, 131, 118, "Pliers");
     public static Trigger Car = new(-15, -35, 152, 144, "Car");
     public static Trigger Anvil = new(68.8f, 65.8f, 244, 243, "Anvil");
-    public static Trigger TelephoneBooth = new(88, 85, 273, 267, "TelephoneBooth");
-    public static Trigger ShoppingCart = new(51.7f, 49, 321, 318.4f, "ShoppingCart");
-    public static Trigger SexyHikingCharacter = new(74, 68, 305, 304, "SexyHikingCharacter");
+    public static Trigger TelephoneBooth = new(88, 85, 273, 267, "Telephone Booth");
+    public static Trigger ShoppingCart = new(51.7f, 49, 321, 318.4f, "Shopping Cart");
+    public static Trigger SexyHikingCharacter = new(74, 68, 305, 304, "Sexy Hiking Character");
 
 }
 
