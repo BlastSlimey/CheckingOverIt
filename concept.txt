@@ -7,7 +7,9 @@ item goal height reduction:
 	x1 antenna top, y >= 357.6
 	x2 temple top, y >= 329.5
 	x3 ice mountain beginning, y >= 282.5
-	x4 gargoyle, y >= 195
+	x4 anvil, y >= 255
+	x5 gargoyle, y >= 195
+	x6 toilet, y >= 157
 locations touch certain things:
 	antenna top, x 60...65, y 357.6...360 possible -30/-20/-10
 	temple, x 52.6...59 , y 318.7...330 possible -30/-20/-10
@@ -33,4 +35,14 @@ locations touch certain things:
 	concrete pipe x 15.5...19, y 25.3...21.8 possible -50/-40/-30
 	paddle x -2...1.3, y 4.5...5.2 possible always
 	tree x -31...-26 , y -3...5 possible always
+	---0.2.0---
+	barrels 				region_early		x 18...21 y 30...32
+	first lamp 				region_early		x 27...28 y 69.9...70.7
+	big balloon 			only -10			x 37...43 y 124...134
+	pliers 					-40/-30/-20			x 27...35 y 118...131
+	car 					-40/-30/-20			x -15...-35 y 144...152
+	anvil 					-40/-30/-20			x 65.8...68.8 y 243...244
+	telephone booth 		-30/-20/-10			x 85...88 y 267...273
+	shopping cart 			-30/-20/-10			x 49...51.7 y 318.4...321
+	sexy hiking character 	only -10			x 68...74 y 304...305
 	
