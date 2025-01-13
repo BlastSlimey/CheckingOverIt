@@ -60,22 +60,10 @@ public class ConnectionHandler {
         } else {
             Success = (LoginSuccessful)result;
             logger.LogInfo("Connection successful");
+            ProcessReceived();
             Session.Items.ItemReceived += (receivedItemsHelper) => {
                 logger.LogInfo($"Received {receivedItemsHelper.DequeueItem().ItemName}");
-                GravityReductions = 0;
-                GoalHeightReductions = 0;
-                WindTraps = 0;
-                foreach (ItemInfo item in Session.Items.AllItemsReceived) {
-                    if (item.ItemName.Equals("Gravity Reduction")) GravityReductions++;
-                    else if (item.ItemName.Equals("Goal Height Reduction")) GoalHeightReductions++;
-                    else if (item.ItemName.Equals("Wind Trap")) WindTraps++;
-                }
-                if (GravityReductions > 4) GravityReductions = 4;
-                if (GoalHeightReductions > 6) GoalHeightReductions = 6;
-                if (WindTraps > 6) WindTraps = 6;
-                logger.LogInfo(
-                    $"Gravity Reductions: {GravityReductions}, Goal Height Reductions: {GoalHeightReductions}, Wind Traps: {WindTraps}"
-                );
+                ProcessReceived();
                 updateGravity(false);
             };
         }
@@ -87,13 +75,32 @@ public class ConnectionHandler {
         Logger.LogInfo("Processing offline inventory...");
         JObject inv = JObject.Parse(ConfigHandler.OfflineItems.Value);
         GravityReductions = inv.Value<int?>("Gravity Reduction") ?? 2;
-        GoalHeightReductions = inv.Value<int?>("Goal Height Reduction") ?? 2;
-        WindTraps = inv.Value<int?>("Wind Trap") ?? 2;
+        GoalHeightReductions = inv.Value<int?>("Goal Height Reduction") ?? 0;
+        WindTraps = inv.Value<int?>("Wind Trap") ?? 0;
         if (GravityReductions > 4) GravityReductions = 4;
         if (GoalHeightReductions > 6) GoalHeightReductions = 6;
         if (WindTraps > 6) WindTraps = 6;
         Logger.LogInfo(
-            $"Gravity Reductions: {GravityReductions}, Goal Height Reductions: {GoalHeightReductions}, Wind Traps: {WindTraps}"
+            $"[OfflineList] Gravity Reductions: {GravityReductions}, Goal Height Reductions: {GoalHeightReductions}, Wind Traps: {WindTraps}"
+        );
+
+    }
+
+    public static void ProcessReceived() {
+        
+        GravityReductions = 0;
+        GoalHeightReductions = 0;
+        WindTraps = 0;
+        foreach (ItemInfo item in Session.Items.AllItemsReceived) {
+            if (item.ItemName.Equals("Gravity Reduction")) GravityReductions++;
+            else if (item.ItemName.Equals("Goal Height Reduction")) GoalHeightReductions++;
+            else if (item.ItemName.Equals("Wind Trap")) WindTraps++;
+        }
+        if (GravityReductions > 4) GravityReductions = 4;
+        if (GoalHeightReductions > 6) GoalHeightReductions = 6;
+        if (WindTraps > 6) WindTraps = 6;
+        Logger.LogInfo(
+            $"[Received] Gravity Reductions: {GravityReductions}, Goal Height Reductions: {GoalHeightReductions}, Wind Traps: {WindTraps}"
         );
 
     }
