@@ -9,6 +9,7 @@ using UnityEngine.Rendering.PostProcessing;
 
 public class PatchesHandler {
 
+    // 0.1.0 locations
     public static ManualLogSource Logger;
     public static GravityControl GravControl;
     public static List<Trigger> CheckedTriggers = [];
@@ -37,6 +38,17 @@ public class PatchesHandler {
     public static Trigger Temple = new(59, 52.6f, 330, 318.7f, "Temple");
     public static Trigger AntennaTop = new(65, 60, 360, 357.6f, "Antenna Top");
 
+    // 0.2.0 locations
+    public static Trigger Barrels = new(21, 18, 32, 30, "Barrels");
+    public static Trigger FirstLamp = new(28, 27, 70.7f, 69.9f, "FirstLamp");
+    public static Trigger BigBalloon = new(43, 37, 134, 124, "BigBalloon");
+    public static Trigger Pliers = new(35, 27, 131, 118, "Pliers");
+    public static Trigger Car = new(-15, -35, 152, 144, "Car");
+    public static Trigger Anvil = new(68.8f, 65.8f, 244, 243, "Anvil");
+    public static Trigger TelephoneBooth = new(88, 85, 273, 267, "TelephoneBooth");
+    public static Trigger ShoppingCart = new(51.7f, 49, 321, 318.4f, "ShoppingCart");
+    public static Trigger SexyHikingCharacter = new(74, 68, 305, 304, "SexyHikingCharacter");
+
 }
 
 public struct Trigger(float xma, float xmi, float yma, float ymi, string nam) {
@@ -59,11 +71,15 @@ public struct Trigger(float xma, float xmi, float yma, float ymi, string nam) {
 [HarmonyPatch(typeof(GravityControl))]
 public class GravityControlPatch {
 
-    public static void UpdateGravity() {
-        Physics2D.gravity = new Vector2(
-            (new System.Random().Next(3) - 1) * 0.4f * ConnectionHandler.WindTraps, 
-            -50 + (10 * ConnectionHandler.GravityReductions)
-        );
+    public static void UpdateGravity(bool creditsUp) {
+        if (creditsUp) {
+            Physics2D.gravity = new Vector2(0f, 1.2f);
+        } else {
+            Physics2D.gravity = new Vector2(
+                (new System.Random().Next(3) - 1) * 0.4f * ConnectionHandler.WindTraps, 
+                -50 + (10 * ConnectionHandler.GravityReductions)
+            );
+        }
     }
 
     public static void HandleCompletion(GravityControl instance, int threshold) {
@@ -86,6 +102,8 @@ public class GravityControlPatch {
                 if (ConnectionHandler.GoalHeightReductions >= 3) {
                     PatchesHandler.AntennaTop.Check();
                     PatchesHandler.Temple.Check();
+                    PatchesHandler.SexyHikingCharacter.Check();
+                    PatchesHandler.ShoppingCart.Check();
                     InitCompletion(instance);
                 }
                 break;
@@ -97,9 +115,48 @@ public class GravityControlPatch {
                     PatchesHandler.LandingStage.Check();
                     PatchesHandler.Bucket.Check();
                     PatchesHandler.SnakeRide.Check();
+                    PatchesHandler.SexyHikingCharacter.Check();
+                    PatchesHandler.ShoppingCart.Check();
+                    PatchesHandler.TelephoneBooth.Check();
+                    InitCompletion(instance);
+                }
+                break;
+            case 5:
+                if (ConnectionHandler.GoalHeightReductions >= 5) {
+                    PatchesHandler.AntennaTop.Check();
+                    PatchesHandler.Temple.Check();
+                    PatchesHandler.IceMountain.Check();
+                    PatchesHandler.LandingStage.Check();
+                    PatchesHandler.Bucket.Check();
+                    PatchesHandler.SnakeRide.Check();
                     PatchesHandler.Hat.Check();
                     PatchesHandler.Hedge.Check();
                     PatchesHandler.ChurchTop.Check();
+                    PatchesHandler.SexyHikingCharacter.Check();
+                    PatchesHandler.ShoppingCart.Check();
+                    PatchesHandler.TelephoneBooth.Check();
+                    PatchesHandler.Anvil.Check();
+                    InitCompletion(instance);
+                }
+                break;
+            case 6:
+                if (ConnectionHandler.GoalHeightReductions >= 6) {
+                    PatchesHandler.AntennaTop.Check();
+                    PatchesHandler.Temple.Check();
+                    PatchesHandler.IceMountain.Check();
+                    PatchesHandler.LandingStage.Check();
+                    PatchesHandler.Bucket.Check();
+                    PatchesHandler.SnakeRide.Check();
+                    PatchesHandler.Hat.Check();
+                    PatchesHandler.Hedge.Check();
+                    PatchesHandler.ChurchTop.Check();
+                    PatchesHandler.Gargoyle.Check();
+                    PatchesHandler.OrangeTable.Check();
+                    PatchesHandler.Toilet.Check();
+                    PatchesHandler.SexyHikingCharacter.Check();
+                    PatchesHandler.ShoppingCart.Check();
+                    PatchesHandler.TelephoneBooth.Check();
+                    PatchesHandler.Anvil.Check();
                     InitCompletion(instance);
                 }
                 break;
@@ -108,7 +165,7 @@ public class GravityControlPatch {
 
     public static void InitCompletion(GravityControl instance) {
         if (!(bool)Util.GetPrivateField(typeof(GravityControl), instance, "creditsUp")) {
-            Physics2D.gravity = new Vector2(0f, 1.2f);
+            UpdateGravity(true);
             Object.Instantiate(instance.creditsPrefab, instance.creditsParent);
             instance.starNest.SetActive(value: true);
             instance.starNest.GetComponent<MeshRenderer>().sharedMaterial.SetFloat("_Brightness", 0f);
@@ -138,41 +195,24 @@ public class GravityControlPatch {
 
     [HarmonyPatch("Start")]
     [HarmonyPostfix]
-    private static void Start(GravityControl __instance) {
-        UpdateGravity();
+    private static void StartPostfix(GravityControl __instance) {
+        UpdateGravity((bool)Util.GetPrivateField(typeof(GravityControl), __instance, "creditsUp"));
         PatchesHandler.GravControl = __instance;
     }
 
     [HarmonyPatch("OnTriggerExit2D")]
     [HarmonyPrefix]
-    private static bool OnTriggerExit2DPrefix() {
-        return false;
-    }
-
-    [HarmonyPatch("OnTriggerExit2D")]
-    [HarmonyPostfix]
-    private static void OnTriggerExit2DPostfix(GravityControl __instance, Collider2D coll) {
+    private static bool OnTriggerExit2DPrefix(GravityControl __instance, Collider2D coll) {
+        // This is a replacement for the original function, so always return false
         if (coll.attachedRigidbody == null) {
-            return;
+            return false;
         }
         if (coll.attachedRigidbody.position.y > __instance.GetComponent<BoxCollider2D>().bounds.max.y - 5f) {
             HandleCompletion(__instance, 0);
         } else {
-            UpdateGravity();
+            UpdateGravity((bool)Util.GetPrivateField(typeof(GravityControl), __instance, "creditsUp"));
         }
-    }
-
-}
-
-[HarmonyPatch(typeof(GravityControlLite))]
-public class GravityControlLitePatch {
-
-    [HarmonyPatch("OnTriggerExit2D")]
-    [HarmonyPostfix]
-    private static void OnTriggerExit2DPostfix(Collider2D coll) {
-        if (coll.attachedRigidbody != null) {
-            GravityControlPatch.UpdateGravity();
-        }
+        return false;
     }
 
 }
@@ -186,27 +226,32 @@ public class HammerCollisionsPatch {
 
         Collider2D mycoll = (Collider2D)Util.GetPrivateField(typeof(HammerCollisions), __instance, "myCollider");
         Vector2 position = mycoll.attachedRigidbody.position;
-        //PatchesHandler.Logger?.LogInfo(position);
+        if (ConfigHandler.PrintHammerCollision.Value) PatchesHandler.Logger?.LogInfo(position);
 
         Trigger[] possible;
-        if (position.x <= 0) possible = [
-            PatchesHandler.Tree, PatchesHandler.Child, PatchesHandler.SnakeRide, PatchesHandler.OrangeTable, PatchesHandler.KidsSlide, 
-            PatchesHandler.Paddle, PatchesHandler.Grill
-        ];
-        else if (position.x <= 10.5f) possible = [
-            PatchesHandler.Paddle, PatchesHandler.Grill, PatchesHandler.Gargoyle, PatchesHandler.LandingStage
-        ];
-        else if (position.x <= 20) possible = [
-            PatchesHandler.ConcretePipe, PatchesHandler.SecurityCam, PatchesHandler.ChurchTop, PatchesHandler.Bathtub, 
-            PatchesHandler.Staircase, PatchesHandler.Bucket
-        ];
-        else if (position.x <= 26) possible = [
-            PatchesHandler.Cup, PatchesHandler.SecondLamp, PatchesHandler.Bathtub, PatchesHandler.Staircase, PatchesHandler.Bucket, 
-            PatchesHandler.IceMountain
-        ];
+        if (position.y <= 40) possible = [
+            PatchesHandler.Tree, PatchesHandler.Paddle, PatchesHandler.ConcretePipe, PatchesHandler.Cup, PatchesHandler.Barrels, 
+            PatchesHandler.SnakeRide
+        ]; 
+        else if (position.y <= 117) possible = [
+            PatchesHandler.Trash, PatchesHandler.SecondLamp, PatchesHandler.Bathtub, PatchesHandler.Grill, PatchesHandler.FirstLamp, 
+            PatchesHandler.SnakeRide
+        ]; 
+        else if (position.y <= 141) possible = [
+            PatchesHandler.KidsSlide, PatchesHandler.Child, PatchesHandler.Staircase, PatchesHandler.SecurityCam, PatchesHandler.BigBalloon, 
+            PatchesHandler.Pliers, PatchesHandler.SnakeRide
+        ]; 
+        else if (position.y <= 215.5f) possible = [
+            PatchesHandler.Toilet, PatchesHandler.OrangeTable, PatchesHandler.Gargoyle, PatchesHandler.ChurchTop, PatchesHandler.Car, 
+            PatchesHandler.SnakeRide
+        ]; 
+        else if (position.y <= 274.5f) possible = [
+            PatchesHandler.Hedge, PatchesHandler.Hat, PatchesHandler.Bucket, PatchesHandler.Anvil, PatchesHandler.TelephoneBooth, 
+            PatchesHandler.SnakeRide
+        ]; 
         else possible = [
-            PatchesHandler.Trash, PatchesHandler.Toilet, PatchesHandler.Hedge, PatchesHandler.Hat, PatchesHandler.IceMountain, 
-            PatchesHandler.Temple, PatchesHandler.AntennaTop
+            PatchesHandler.LandingStage, PatchesHandler.IceMountain, PatchesHandler.Temple, PatchesHandler.AntennaTop, 
+            PatchesHandler.ShoppingCart, PatchesHandler.SexyHikingCharacter, PatchesHandler.SnakeRide
         ];
 
         foreach (Trigger t in possible) {
@@ -230,8 +275,12 @@ public class HammerCollisionsPatch {
             GravityControlPatch.HandleCompletion(PatchesHandler.GravControl, 2);
         } else if (position.y >= 282.5f) {
             GravityControlPatch.HandleCompletion(PatchesHandler.GravControl, 3);
-        } else if (position.y >= 195) {
+        } else if (position.y >= 255) {
             GravityControlPatch.HandleCompletion(PatchesHandler.GravControl, 4);
+        } else if (position.y >= 195) {
+            GravityControlPatch.HandleCompletion(PatchesHandler.GravControl, 5);
+        } else if (position.y >= 157) {
+            GravityControlPatch.HandleCompletion(PatchesHandler.GravControl, 6);
         }
         
     }
