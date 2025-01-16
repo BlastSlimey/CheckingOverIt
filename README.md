@@ -21,6 +21,7 @@ Client mod for the Archipelago multiworld randomizer.
 ### Client QoL
 - better config file
 - restructure installation
+- Text client output in console
 
 ### APWorld Qol
 
@@ -29,6 +30,7 @@ Client mod for the Archipelago multiworld randomizer.
 - Something with friction
 - Teleport traps
 - Monologue traps
+- Disable saving any progress
 - Deathlink:
   - Receiving deathlinks teleports to the start
   - Falling far enough, so that the game triggers some audio clip, sends a deathlink
