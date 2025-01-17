@@ -38,6 +38,7 @@ Client mod for the Archipelago multiworld randomizer.
     - hook into whatever the game outputs onto the console
     - custom buffer of last position of pot collision, height difference triggers
     - divide map into areas and trigger if being in earlier area than before
+  - Option to also teleport the player to the start upon sending a deathlink
 - Different item/progression modes:
   - Original mode (already implemented)
   - Traps only mode, with gravity increasion
