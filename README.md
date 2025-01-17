@@ -33,7 +33,10 @@ Client mod for the Archipelago multiworld randomizer.
 - Disable saving any progress
 - Deathlink:
   - Receiving deathlinks teleports to the start
-  - Falling far enough, so that the game triggers some audio clip, sends a deathlink
+  - Unsure about ways of triggering deathlink:
+    - listen to audio clips
+    - hook into whatever the game outputs onto the console
+    - custom buffer of last position of pot collision, height difference triggers
 - Different item/progression modes:
   - Original mode (already implemented)
   - Traps only mode, with gravity increasion
