@@ -32,7 +32,10 @@ Client mod for the Archipelago multiworld randomizer.
 - Monologue traps
 - Disable saving any progress
 - Deathlink:
-  - Receiving deathlinks teleports to the start
+  - Receiving deathlinks triggers… 
+    - Teleport to start
+    - Play progress losing audio clip
+    - both
   - Unsure about ways of triggering deathlink:
     - listen to audio clips
     - hook into whatever the game outputs onto the console
