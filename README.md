@@ -31,6 +31,7 @@ Client mod for the Archipelago multiworld randomizer.
 - Teleport traps
 - Monologue traps
 - Disable saving any progress
+- Goal enabling item
 - Deathlink:
   - Receiving deathlinks triggers… 
     - Teleport to start
