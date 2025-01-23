@@ -32,6 +32,7 @@ Client mod for the Archipelago multiworld randomizer.
 - Monologue traps
 - Disable saving any progress
 - Goal enabling item
+- Hammer force increasion (starts with 0, 3 is vanilla, up to 4)
 - Deathlink:
   - Receiving deathlinks triggers… 
     - Teleport to start
