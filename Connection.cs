@@ -2,6 +2,7 @@
 using System;
 using Archipelago.MultiClient.Net;
 using Archipelago.MultiClient.Net.Enums;
+using Archipelago.MultiClient.Net.MessageLog.Messages;
 using Archipelago.MultiClient.Net.Models;
 using BepInEx.Logging;
 using Newtonsoft.Json.Linq;
@@ -65,6 +66,9 @@ public class ConnectionHandler {
                 logger.LogInfo($"Received {receivedItemsHelper.DequeueItem().ItemName}");
                 ProcessReceived();
                 updateGravity(GravityControlPatch.creditsUp());
+            };
+            Session.MessageLog.OnMessageReceived += (LogMessage message) => {
+                logger.LogInfo(message.ToString());
             };
         }
 
