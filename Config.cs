@@ -25,6 +25,7 @@ public class ConfigHandler {
     public static ConfigEntry<int> ActiveSlot;
     public static ConfigEntry<string> OfflineItems;
     public static ConfigEntry<bool> PrintHammerCollision;
+    public static ConfigEntry<bool> PrintGravity;
 
     public static void InitConfig(ConfigFile Config) {
         ConnectionsList = Config.Bind(
@@ -47,6 +48,10 @@ public class ConfigHandler {
         PrintHammerCollision = Config.Bind(
             "General", "PrintHammerCollision", false, 
             "Print every collision of the hammer with anything to the console. For debug purposes."
+        );
+        PrintGravity = Config.Bind(
+            "General", "PrintGravity", false, 
+            "Print every change of gravity to the console. For debug purposes."
         );
     }
 

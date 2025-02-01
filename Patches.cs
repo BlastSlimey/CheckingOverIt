@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Archipelago.MultiClient.Net.Enums;
 using Archipelago.MultiClient.Net.Packets;
 using BepInEx.Logging;
@@ -72,6 +73,12 @@ public struct Trigger(float xma, float xmi, float yma, float ymi, string nam) {
 public class GravityControlPatch {
 
     public static System.Random Random = new System.Random();
+    public static Task GravityTask = null;
+    public static bool InSpace = false;
+
+    public static bool creditsUp() {
+        return (bool)Util.GetPrivateField(typeof(GravityControl), PatchesHandler.GravControl, "creditsUp");
+    }
 
     public static void UpdateGravity(bool creditsUp) {
         if (creditsUp) {
@@ -79,9 +86,10 @@ public class GravityControlPatch {
         } else {
             Physics2D.gravity = new Vector2(
                 (Random.Next(3) - 1) * 0.4f * ConnectionHandler.WindTraps, 
-                -50 + (10 * ConnectionHandler.GravityReductions)
+                InSpace ? 0 : -50 + (10 * ConnectionHandler.GravityReductions)
             );
         }
+        if (ConfigHandler.PrintGravity.Value) PatchesHandler.Logger?.LogInfo(Physics2D.gravity.ToString());
     }
 
     public static void HandleCompletion(GravityControl instance, int threshold) {
@@ -166,7 +174,7 @@ public class GravityControlPatch {
     }
 
     public static void InitCompletion(GravityControl instance) {
-        if (!(bool)Util.GetPrivateField(typeof(GravityControl), instance, "creditsUp")) {
+        if (!creditsUp()) {
             UpdateGravity(true);
             Object.Instantiate(instance.creditsPrefab, instance.creditsParent);
             instance.starNest.SetActive(value: true);
@@ -180,40 +188,60 @@ public class GravityControlPatch {
             PlayerPrefs.DeleteKey("SaveGame0");
             PlayerPrefs.DeleteKey("SaveGame1");
             PlayerPrefs.Save();
-            for (int i = 1; i < 10; i++) {
-                string loc_name = $"Got Over It #{i}";
-                long loc_id = ConnectionHandler.Session.Locations.GetLocationIdFromName("Getting Over It", loc_name);
-                if (ConnectionHandler.Session.Locations.AllMissingLocations.Contains(loc_id)) {
-                    ConnectionHandler.CheckLocation(loc_id, loc_name);
-                    return;
+            if (ConnectionHandler.Success != null) {
+                for (int i = 1; i < 10; i++) {
+                    string loc_name = $"Got Over It #{i}";
+                    long loc_id = ConnectionHandler.Session.Locations.GetLocationIdFromName("Getting Over It", loc_name);
+                    if (ConnectionHandler.Session.Locations.AllMissingLocations.Contains(loc_id)) {
+                        ConnectionHandler.CheckLocation(loc_id, loc_name);
+                        return;
+                    }
                 }
+                // If no completion check left
+                StatusUpdatePacket packet = new StatusUpdatePacket();
+                packet.Status = ArchipelagoClientState.ClientGoal;
+                ConnectionHandler.Session.Socket.SendPacket(packet);
             }
-            // If no completion check left
-            StatusUpdatePacket packet = new StatusUpdatePacket();
-            packet.Status = ArchipelagoClientState.ClientGoal;
-            ConnectionHandler.Session.Socket.SendPacket(packet);
         }
     }
 
     [HarmonyPatch("Start")]
     [HarmonyPostfix]
     private static void StartPostfix(GravityControl __instance) {
-        UpdateGravity((bool)Util.GetPrivateField(typeof(GravityControl), __instance, "creditsUp"));
         PatchesHandler.GravControl = __instance;
+        UpdateGravity(creditsUp());
+        if (GravityTask == null) {
+            GravityTask = Task.Run(async () => {
+                while (true) {
+                    await Task.Delay(Random.Next(3, 15)*1000);
+                    UpdateGravity(creditsUp());
+                }
+            });
+        }
+    }
+
+    [HarmonyPatch("OnTriggerEnter2D")]
+    [HarmonyPrefix]
+    private static bool OnTriggerEnter2DPrefix(GravityControl __instance) {
+        InSpace = true;
+        UpdateGravity(creditsUp());
+        // This is a replacement for the original function, so always return false
+        return false;
     }
 
     [HarmonyPatch("OnTriggerExit2D")]
     [HarmonyPrefix]
     private static bool OnTriggerExit2DPrefix(GravityControl __instance, Collider2D coll) {
-        // This is a replacement for the original function, so always return false
+        InSpace = false;
         if (coll.attachedRigidbody == null) {
             return false;
         }
         if (coll.attachedRigidbody.position.y > __instance.GetComponent<BoxCollider2D>().bounds.max.y - 5f) {
             HandleCompletion(__instance, 0);
         } else {
-            UpdateGravity((bool)Util.GetPrivateField(typeof(GravityControl), __instance, "creditsUp"));
+            UpdateGravity(creditsUp());
         }
+        // This is a replacement for the original function, so always return false
         return false;
     }
 

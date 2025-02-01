@@ -64,7 +64,7 @@ public class ConnectionHandler {
             Session.Items.ItemReceived += (receivedItemsHelper) => {
                 logger.LogInfo($"Received {receivedItemsHelper.DequeueItem().ItemName}");
                 ProcessReceived();
-                updateGravity(false);
+                updateGravity(GravityControlPatch.creditsUp());
             };
         }
 
