@@ -89,7 +89,7 @@ public class GravityControlPatch {
                 InSpace ? 0 : -50 + (10 * ConnectionHandler.GravityReductions)
             );
         }
-        if (ConfigHandler.PrintGravity.Value) PatchesHandler.Logger?.LogInfo(Physics2D.gravity.ToString());
+        if (ConfigHandler.PrintGravity.Value) PatchesHandler.Logger?.LogInfo("Gravity update: " + Physics2D.gravity.ToString());
     }
 
     public static void HandleCompletion(GravityControl instance, int threshold) {
@@ -256,7 +256,7 @@ public class HammerCollisionsPatch {
 
         Collider2D mycoll = (Collider2D)Util.GetPrivateField(typeof(HammerCollisions), __instance, "myCollider");
         Vector2 position = mycoll.attachedRigidbody.position;
-        if (ConfigHandler.PrintHammerCollision.Value) PatchesHandler.Logger?.LogInfo(position);
+        if (ConfigHandler.PrintHammerCollision.Value) PatchesHandler.Logger?.LogInfo("Hammer collided: " + position.ToString());
 
         Trigger[] possible;
         if (position.y <= 40) possible = [
