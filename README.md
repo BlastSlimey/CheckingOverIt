@@ -24,6 +24,7 @@ Client mod for the Archipelago multiworld randomizer.
 - Text client output in console
 
 ### APWorld Qol
+- UT compatibility
 
 ### Gameplay
 - Collectable set pieces
@@ -33,6 +34,7 @@ Client mod for the Archipelago multiworld randomizer.
 - Disable saving any progress
 - Goal enabling item
 - Hammer force increasion (starts with 0, 3 is vanilla, up to 4)
+- Option checks_per_over_it
 - Deathlink:
   - Receiving deathlinks triggers… 
     - Teleport to start
