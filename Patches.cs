@@ -327,3 +327,15 @@ public class RewardLogicPatch {
     }
 
 }
+
+[HarmonyPatch(typeof(Loader))]
+public class LoaderPatch {
+
+    [HarmonyPatch("Start")]
+    [HarmonyPostfix]
+    private static void StartPostfix(Loader __instance) {
+        // Prevent continuing offline saves
+        Util.SetPrivateField(typeof(Loader), __instance, "canContinue", false);
+    }
+
+}
