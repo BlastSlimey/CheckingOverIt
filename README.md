@@ -9,7 +9,7 @@ Client mod for the Archipelago multiworld randomizer.
 ### Technicalities 
 
 ### Client QoL
-- better config file
+- connection input windows before the game starts, works with current configs
 
 ### APWorld Qol
 
