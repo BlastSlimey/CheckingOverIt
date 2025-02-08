@@ -10,7 +10,6 @@ Client mod for the Archipelago multiworld randomizer.
 
 ### Client QoL
 - connection input windows before the game starts, works with current configs
-- individual save file paths for each individual world
 
 ### APWorld Qol
 
@@ -25,6 +24,7 @@ Client mod for the Archipelago multiworld randomizer.
 - Deathlink:
   - Receiving deathlinks triggers… 
     - Teleport to start
+    - Close the game without saving
     - Play progress losing audio clip
     - both
   - Unsure about ways of triggering deathlink:
@@ -37,3 +37,4 @@ Client mod for the Archipelago multiworld randomizer.
   - Original mode (already implemented)
   - Traps only mode, with gravity increasion
   - Barrier mode: collect mcguffins to be able to go higher
+  - Time trial mode: all checks are trials to reach the top in time
