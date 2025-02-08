@@ -7,7 +7,7 @@ using Archipelago.MultiClient.Net.Models;
 using BepInEx.Logging;
 using Newtonsoft.Json.Linq;
 
-public class ConnectionHandler {
+public static class ConnectionHandler {
 
     public static ArchipelagoSession Session;
     public static LoginSuccessful Success;
@@ -19,18 +19,20 @@ public class ConnectionHandler {
     public static void Connect(ManualLogSource logger, Action<bool> updateGravity) {
 
         Logger = logger;
-        ProcessOfflineList();
 
         JArray list = JArray.Parse(ConfigHandler.ConnectionsList.Value);
         int active = ConfigHandler.ActiveSlot.Value;
         if (active < -1) {
             Logger.LogWarning($"Illegal ActiveSlot value: {active}");
+            ProcessOfflineList();
             return;
         } else if (active >= list.Count) {
             Logger.LogWarning($"ActiveSlot value out of range: {active}");
+            ProcessOfflineList();
             return;
         } else if (active == -1) {
             Logger.LogInfo("Connecting disabled as per config");
+            ProcessOfflineList();
             return;
         }
         JToken activeList = list[active];
@@ -61,11 +63,16 @@ public class ConnectionHandler {
         } else {
             Success = (LoginSuccessful)result;
             logger.LogInfo("Connection successful");
+            logger.LogInfo("Seed: "+Session.RoomState.Seed);
             ProcessReceived();
             Session.Items.ItemReceived += (receivedItemsHelper) => {
-                logger.LogInfo($"Received {receivedItemsHelper.DequeueItem().ItemName}");
-                ProcessReceived();
-                updateGravity(GravityControlPatch.creditsUp());
+                try {
+                    logger.LogInfo($"Received {receivedItemsHelper.DequeueItem().ItemName}");
+                    ProcessReceived();
+                    updateGravity(GravityControlPatch.creditsUp());
+                } catch (Exception e) {
+                    logger.LogError("Exception from receiving item: "+e.GetBaseException().Message);
+                }
             };
             Session.MessageLog.OnMessageReceived += (LogMessage message) => {
                 logger.LogInfo(message.ToString());
