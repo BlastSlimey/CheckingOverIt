@@ -3,23 +3,7 @@ using System;
 using System.Linq;
 using BepInEx.Configuration;
 
-public struct ConnectionInfo {
-
-    public string slot;
-    public string address;
-    public int port;
-    public string password;
-
-    public ConnectionInfo(string sl, string ad, int po, string pa) {
-        slot = sl;
-        address = ad;
-        port = po;
-        password = pa;
-    }
-
-}
-
-public class ConfigHandler {
+public static class ConfigHandler {
 
     public static ConfigEntry<string> ConnectionsList;
     public static ConfigEntry<int> ActiveSlot;
