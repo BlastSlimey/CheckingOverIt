@@ -17,6 +17,7 @@ Client mod for the Archipelago multiworld randomizer.
 - something to clear all AP-savedata from playerprefs
 
 ### APWorld Qol
+- option: gravity reduction cap (none, 1 less, up to vanilla)
 
 ### Gameplay
 - Collectable set pieces
