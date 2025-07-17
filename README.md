@@ -5,13 +5,19 @@ Client mod for the Archipelago multiworld randomizer.
 ### Required
 
 ### Bugs
+- Gravity doesn't update correctly after reaching the top
+- Fix multiple got over its being skippable by other slots collecting their items
+  - idea: datastorage
+  - idea: new playerprefs key
 
 ### Technicalities 
 
 ### Client QoL
 - connection input windows before the game starts, works with current configs
+- something to clear all AP-savedata from playerprefs
 
 ### APWorld Qol
+- option: gravity reduction cap (none, 1 less, up to vanilla)
 
 ### Gameplay
 - Collectable set pieces
@@ -20,6 +26,9 @@ Client mod for the Archipelago multiworld randomizer.
 - Monologue traps
 - Goal enabling item
 - Hammer force increasion (starts with 0, 3 is vanilla, up to 4)
+- Invisible jetpack item
+  - activate by pressing a key
+  - limited flight duration, reset by landing on something
 - Option checks_per_over_it
 - Deathlink:
   - Receiving deathlinks triggers… 
